@@ -100,13 +100,12 @@ class Customer(object):
         res_str = "Rental Record for {}\n".format(self.name)
 
         for each in self.rental_list:
-            thisAmount = each.getCharge()
             frequentRenterPoints += 1
             if each.moive.priceCode == Moive.NEW_RELEASE and each.daysRent > 1:
                 frequentRenterPoints += 1
 
-            res_str += "\t {} \t {}\n".format(each.moive.title, thisAmount)
-            totalAmount += thisAmount
+            res_str += "\t {} \t {}\n".format(each.moive.title, each.getCharge())
+            totalAmount += each.getCharge()
 
         res_str += "Amount owed is {}\n".format(totalAmount)
         res_str += "You earned {} frequent renter points".format(frequentRenterPoints)
