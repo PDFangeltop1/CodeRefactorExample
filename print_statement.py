@@ -78,27 +78,30 @@ class Customer(object):
         res += self.statement()
         return res
 
+    def amountFor(self, each):
+        thisAmount = 0        
+        c_moive_code = each.moive.priceCode
+        if c_moive_code == Moive.REGULAR:
+            thisAmount += 2
+            if each.daysRent > 2:
+                thisAmount += (each.daysRent -2)*1.5
+        if c_moive_code == Moive.NEW_RELEASE:
+            thisAmount += each.daysRent*3
+        if c_moive_code == Moive.CHILDREN:
+            thisAmount += 1.5
+            if each.daysRent > 3:
+                thisAmount += (each.daysRent - 3)*1.5
+        return thisAmount
+    
     def statement(self):
         totalAmount = 0
         frequentRenterPoints = 0
         res_str = "Rental Record for {}\n".format(self.name)
 
         for each in self.rental_list:
-            thisAmount = 0
-            c_moive_code = each.moive.priceCode
-            if c_moive_code == Moive.REGULAR:
-                thisAmount += 2
-                if each.daysRent > 2:
-                    thisAmount += (each.daysRent -2)*1.5
-            if c_moive_code == Moive.NEW_RELEASE:
-                thisAmount += each.daysRent*3
-            if c_moive_code == Moive.CHILDREN:
-                thisAmount += 1.5
-                if each.daysRent > 3:
-                    thisAmount += (each.daysRent - 3)*1.5
-
+            thisAmount = self.amountFor(each)
             frequentRenterPoints += 1
-            if c_moive_code == Moive.NEW_RELEASE and each.daysRent > 1:
+            if each.moive.priceCode == Moive.NEW_RELEASE and each.daysRent > 1:
                 frequentRenterPoints += 1
 
             res_str += "\t {} \t {}\n".format(each.moive.title, thisAmount)
