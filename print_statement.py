@@ -97,24 +97,39 @@ class Customer(object):
         for i, rent in enumerate(self.rental_list):
             res += "[Rental No.{}/{:<3}]: {:<20}\n".format(i, len(self.rental_list), rent)
 
-        res += self.statement()
+        res += self.statement() + "\n"
+        res += self.htmlStatement()
         return res
-
     
     def statement(self):
-        totalAmount = 0
-        frequentRenterPoints = 0
         res_str = "Rental Record for {}\n".format(self.name)
-
         for each in self.rental_list:
-            frequentRenterPoints += each.getFrequentRenterPoints()
             res_str += "\t {} \t {}\n".format(each.moive.title, each.getCharge())
-            totalAmount += each.getCharge()
 
-        res_str += "Amount owed is {}\n".format(totalAmount)
-        res_str += "You earned {} frequent renter points".format(frequentRenterPoints)
+        res_str += "Amount owed is {}\n".format(self.getTotalCharge())
+        res_str += "You earned {} frequent renter points".format(self.getTotalFrequentRenterPoints())
         return res_str
-                
+
+    def htmlStatement(self):
+        html_str = "<H1>Rental for <EM> {} </EM> </H1><P>\n".format(self.name)
+        for each in self.rental_list:
+            html_str += "{} : {} <BR>\n".format(each.moive.title, each.getCharge())
+        html_str += "<P> You owe <EM> {} </EM><P>\n".format(self.getTotalCharge())
+        html_str += "On this rental you earned <EM> {} </EM> frequent renter points<P>".format(self.getTotalFrequentRenterPoints())
+        return html_str
+        
+    def getTotalCharge(self):
+        res = 0
+        for each in self.rental_list:
+            res += each.getCharge()
+        return res
+
+    def getTotalFrequentRenterPoints(self):
+        res = 0
+        for each in self.rental_list:
+            res += each.getFrequentRenterPoints()
+        return res
+    
 def f():
     m1 = Moive("Disney", 1)
     print(m1)
