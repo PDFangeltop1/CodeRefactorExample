@@ -4,17 +4,42 @@ class Price(object):
     def getPriceCode(self):
         pass
 
+    def getCharge(self):
+        pass
+
+    def getFrequentRenterPoints(self, daysRent):
+        return 1
+    
 class NewRelasePrice(Price):
     def getPriceCode(self):
         return Moive.NEW_RELEASE
-
+    def getCharge(self, daysRent):
+        return daysRent*3
+    def getFrequentRenterPoints(self, daysRent):
+        if daysRent > 1:
+            return 2
+        else:
+            return 1
+    
 class RegularPrice(Price):
     def getPriceCode(self):
         return Moive.REGULAR
 
+    def getCharge(self, daysRent):
+        res = 2
+        if daysRent > 2:
+            res += (daysRent-2)*1.5
+        return res
+    
 class ChildrensPrice(Price):
     def getPriceCode(self):
         return Moive.CHILDREN
+
+    def getCharge(self, daysRent):
+        res = 1.5
+        if daysRent > 3:
+            res += (daysRent - 3)*1.5
+        return res
     
 class Moive(object):
     CHILDREN = 2
@@ -58,25 +83,11 @@ class Moive(object):
         return "[Title: {:<10} Price: {:<5}]".format(self.title, self.priceCode)
 
     def getCharge(self, daysRent):
-        thisAmount = 0        
-        c_moive_code = self.priceCode
-        if c_moive_code == Moive.REGULAR:
-            thisAmount += 2
-            if daysRent > 2:
-                thisAmount += (daysRent -2)*1.5
-        if c_moive_code == Moive.NEW_RELEASE:
-            thisAmount += daysRent*3
-        if c_moive_code == Moive.CHILDREN:
-            thisAmount += 1.5
-            if daysRent > 3:
-                thisAmount += (daysRent - 3)*1.5
-        return thisAmount
-
+        return self.price.getCharge(daysRent)
+    
     def getFrequentRenterPoints(self, daysRent):
-        if self.priceCode == Moive.NEW_RELEASE and daysRent > 1:
-            return 2
-        else:
-            return 1
+        return self.price.getFrequentRenterPoints(daysRent)    
+
         
 class Rental(object):
     def __init__(self,moive, daysRent):
