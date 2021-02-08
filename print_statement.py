@@ -27,6 +27,27 @@ class Moive(object):
     def __str__(self):
         return "[Title: {:<10} Price: {:<5}]".format(self.title, self.priceCode)
 
+    def getCharge(self, daysRent):
+        thisAmount = 0        
+        c_moive_code = self.priceCode
+        if c_moive_code == Moive.REGULAR:
+            thisAmount += 2
+            if daysRent > 2:
+                thisAmount += (daysRent -2)*1.5
+        if c_moive_code == Moive.NEW_RELEASE:
+            thisAmount += daysRent*3
+        if c_moive_code == Moive.CHILDREN:
+            thisAmount += 1.5
+            if daysRent > 3:
+                thisAmount += (daysRent - 3)*1.5
+        return thisAmount
+
+    def getFrequentRenterPoints(self, daysRent):
+        if self.priceCode == Moive.NEW_RELEASE and daysRent > 1:
+            return 2
+        else:
+            return 1
+        
 class Rental(object):
     def __init__(self,moive, daysRent):
         self.moive = moive
@@ -52,26 +73,10 @@ class Rental(object):
         return "Moive: {:<10}, daysRent: {:<5}".format(self.moive, self.daysRent)
 
     def getCharge(self):
-        thisAmount = 0        
-        c_moive_code = self.moive.priceCode
-        if c_moive_code == Moive.REGULAR:
-            thisAmount += 2
-            if self.daysRent > 2:
-                thisAmount += (self.daysRent -2)*1.5
-        if c_moive_code == Moive.NEW_RELEASE:
-            thisAmount += self.daysRent*3
-        if c_moive_code == Moive.CHILDREN:
-            thisAmount += 1.5
-            if self.daysRent > 3:
-                thisAmount += (self.daysRent - 3)*1.5
-        return thisAmount
-
+        return self.moive.getCharge(self.daysRent)
+    
     def getFrequentRenterPoints(self):
-        if self.moive.priceCode == Moive.NEW_RELEASE and self.daysRent > 1:
-            return 2
-        else:
-            return 1
-        
+        return self.moive.getFrequentRenterPoints(self.daysRent)
         
 class Customer(object):
     def __init__(self, name):
