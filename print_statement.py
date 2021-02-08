@@ -51,6 +51,21 @@ class Rental(object):
     def __str__(self):
         return "Moive: {:<10}, daysRent: {:<5}".format(self.moive, self.daysRent)
 
+    def getCharge(self):
+        thisAmount = 0        
+        c_moive_code = self.moive.priceCode
+        if c_moive_code == Moive.REGULAR:
+            thisAmount += 2
+            if self.daysRent > 2:
+                thisAmount += (self.daysRent -2)*1.5
+        if c_moive_code == Moive.NEW_RELEASE:
+            thisAmount += self.daysRent*3
+        if c_moive_code == Moive.CHILDREN:
+            thisAmount += 1.5
+            if self.daysRent > 3:
+                thisAmount += (self.daysRent - 3)*1.5
+        return thisAmount
+    
 class Customer(object):
     def __init__(self, name):
         self.name = name
@@ -78,20 +93,6 @@ class Customer(object):
         res += self.statement()
         return res
 
-    def amountFor(self, each):
-        thisAmount = 0        
-        c_moive_code = each.moive.priceCode
-        if c_moive_code == Moive.REGULAR:
-            thisAmount += 2
-            if each.daysRent > 2:
-                thisAmount += (each.daysRent -2)*1.5
-        if c_moive_code == Moive.NEW_RELEASE:
-            thisAmount += each.daysRent*3
-        if c_moive_code == Moive.CHILDREN:
-            thisAmount += 1.5
-            if each.daysRent > 3:
-                thisAmount += (each.daysRent - 3)*1.5
-        return thisAmount
     
     def statement(self):
         totalAmount = 0
@@ -99,7 +100,7 @@ class Customer(object):
         res_str = "Rental Record for {}\n".format(self.name)
 
         for each in self.rental_list:
-            thisAmount = self.amountFor(each)
+            thisAmount = each.getCharge()
             frequentRenterPoints += 1
             if each.moive.priceCode == Moive.NEW_RELEASE and each.daysRent > 1:
                 frequentRenterPoints += 1
