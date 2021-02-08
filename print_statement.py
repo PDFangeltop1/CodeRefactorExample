@@ -1,21 +1,51 @@
 import os
 
+class Price(object):
+    def getPriceCode(self):
+        pass
+
+class NewRelasePrice(Price):
+    def getPriceCode(self):
+        return Moive.NEW_RELEASE
+
+class RegularPrice(Price):
+    def getPriceCode(self):
+        return Moive.REGULAR
+
+class ChildrensPrice(Price):
+    def getPriceCode(self):
+        return Moive.CHILDREN
+    
 class Moive(object):
     CHILDREN = 2
     REGULAR = 0
     NEW_RELEASE = 1
     def __init__(self, title, priceCode):
         self.title = title
+        self.price = priceCode
         self.priceCode = priceCode
 
     @property
+    def price(self):
+        return self.__price
+
+    @price.setter
+    def price(self, x):
+        self.__price = x
+
+    @property
     def priceCode(self):
-        return self.__priceCode
+        return self.__price.getPriceCode()
 
     @priceCode.setter
     def priceCode(self, x):
-        self.__priceCode = x
-
+        if x == self.REGULAR:
+            self.price = RegularPrice()
+        if x == self.CHILDREN:
+            self.price = ChildrensPrice()
+        if x == self.NEW_RELEASE:
+            self.price = NewRelasePrice()
+            
     @property
     def title(self):
         return self.__title
