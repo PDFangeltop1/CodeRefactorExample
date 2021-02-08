@@ -65,7 +65,14 @@ class Rental(object):
             if self.daysRent > 3:
                 thisAmount += (self.daysRent - 3)*1.5
         return thisAmount
-    
+
+    def getFrequentRenterPoints(self):
+        if self.moive.priceCode == Moive.NEW_RELEASE and self.daysRent > 1:
+            return 2
+        else:
+            return 1
+        
+        
 class Customer(object):
     def __init__(self, name):
         self.name = name
@@ -100,10 +107,7 @@ class Customer(object):
         res_str = "Rental Record for {}\n".format(self.name)
 
         for each in self.rental_list:
-            frequentRenterPoints += 1
-            if each.moive.priceCode == Moive.NEW_RELEASE and each.daysRent > 1:
-                frequentRenterPoints += 1
-
+            frequentRenterPoints += each.getFrequentRenterPoints()
             res_str += "\t {} \t {}\n".format(each.moive.title, each.getCharge())
             totalAmount += each.getCharge()
 
